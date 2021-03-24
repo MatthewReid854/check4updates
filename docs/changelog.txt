@@ -1,0 +1,13 @@
+
+
+0.0.2
+'''''
+
+- All printing is in yellow
+- Improved regex to deal with certain version patterns
+
+
+0.0.1
+'''''
+
+Initial commit of project files for Alpha testing.
