@@ -14,9 +14,9 @@ Contents:
   :caption: Usage
 
   What is check4updates
-  How do I use it
   How does it work
   Why can't it auto update
+  Similar libraries
 
 .. toctree::
   :maxdepth: 1
@@ -24,4 +24,4 @@ Contents:
   
   Changelog
   Pull requests and suggested enhancements
-  Contact the author
+  Contributing

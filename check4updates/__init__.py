@@ -169,7 +169,7 @@ class check_and_prompt:
                             check_and_prompt.printyellow(
                                 "From within your Python IDE in a new Python script type:\n"
                                 + italics
-                                + " from check4updates import upgrade\nupgrade('"
+                                + "from check4updates import upgrade\nupgrade('"
                                 + self.package_name
                                 + "')"
                             )
