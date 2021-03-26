@@ -81,12 +81,15 @@ class check_and_prompt:
                 # we can only proceed if obtaining the pypi version was successful
 
                 # pad the versions such that if one version is 1.2.3 and the other is 1.2 the shorter one will be padded to 1.2.0
-                # the padded versions are concatenated so 1.2.3 becomes 123 which allows for easy numerical comparison (hence the need for padding)
-                installed_version_split = self.installed_version.split(".")
-                installed_version_length = len(installed_version_split)
-                pypi_version_split = self.pypi_version.split(".")
+                # further pad each part of the version to 5 digits so 2.51.3 and 5.1.1 aren't just 2513 vs 511 as 5.1.1 should be larger.
+                # Instead they are padded to 5 digits anc concatenated so 5.1.1 becomes 000050000100001 which allows for easy numerical comparison (hence the need for padding)
+                pypi_version_split = pypi_version.split(".")
                 pypi_version_length = len(pypi_version_split)
-                decision_version_split = self.version.split(
+                installed_version_split = installed_version.split(".")
+                installed_version_length = len(installed_version_split)
+                pypi_version_split = pypi_version.split(".")
+                pypi_version_length = len(pypi_version_split)
+                decision_version_split = version.split(
                     "."
                 )  # the decision version is the latest pypi version at the time of the last decision. Only used for 'skip'
                 decision_version_length = len(decision_version_split)
@@ -100,15 +103,15 @@ class check_and_prompt:
                 installed_version_split.extend(
                     ["0"] * (max_version_length - installed_version_length)
                 )
-                installed_version_numeric = "".join(installed_version_split)
+                installed_version_numeric = int(pad_zeros(installed_version_split))
                 pypi_version_split.extend(
                     ["0"] * (max_version_length - pypi_version_length)
                 )
-                pypi_version_numeric = "".join(pypi_version_split)
+                pypi_version_numeric = int(pad_zeros(pypi_version_split))
                 decision_version_split.extend(
                     ["0"] * (max_version_length - decision_version_length)
                 )
-                decision_version_numeric = "".join(decision_version_split)
+                decision_version_numeric = int(pad_zeros(decision_version_split))
 
                 # check if installed version has been superseded
                 if installed_version_numeric == pypi_version_numeric:
@@ -125,15 +128,15 @@ class check_and_prompt:
                     else:
                         # prompt the user to update
                         line = "----------------------------------------------------------------------------------"
-                        check_and_prompt.printyellow(line, bold=True)
-                        check_and_prompt.printyellow(
+                        check_and_prompt.printred(line, bold=True)
+                        check_and_prompt.printred(
                             "Version ",
                             self.pypi_version,
                             " of ",
                             self.package_name,
                             " is available on PyPI",
                         )
-                        check_and_prompt.printyellow(
+                        check_and_prompt.printred(
                             "You currently have version ",
                             self.installed_version,
                             " of ",
@@ -143,49 +146,49 @@ class check_and_prompt:
                         prompt_choice = 0
                         time_before_prompt = time.time()
                         while prompt_choice not in ["1", "2", "3"]:
-                            check_and_prompt.printyellow("Please choose an option:")
-                            check_and_prompt.printyellow("1. I want to upgrade")
-                            check_and_prompt.printyellow("2. Remind me tomorrow")
-                            check_and_prompt.printyellow("3. Skip this version")
-                            prompt_choice = input("\033[93mYour choice: \033[0m")
+                            check_and_prompt.printred("Please choose an option:")
+                            check_and_prompt.printred("1. I want to upgrade")
+                            check_and_prompt.printred("2. Remind me tomorrow")
+                            check_and_prompt.printred("3. Skip this version")
+                            prompt_choice = input("\033[91mYour choice: \033[0m")
                             if prompt_choice not in ["1", "2", "3"]:
-                                check_and_prompt.printyellow("Invalid choice.")
+                                check_and_prompt.printred("Invalid choice.")
                         prompt_delay = time.time() - time_before_prompt
 
                         italics = "\033[3m"
                         if prompt_choice == "1":
-                            check_and_prompt.printyellow(
+                            check_and_prompt.printred(
                                 "\nTo upgrade ",
                                 self.package_name,
                                 " you can do one of the following:",
                             )
-                            check_and_prompt.printyellow(
+                            check_and_prompt.printred(
                                 "Open your command prompt / terminal and type:",
                                 italics,
                                 " pip install --upgrade ",
                                 self.package_name,
                             )
-                            check_and_prompt.printyellow("or")
-                            check_and_prompt.printyellow(
+                            check_and_prompt.printred("or")
+                            check_and_prompt.printred(
                                 "From within your Python IDE in a new Python script type:\n"
                                 + italics
                                 + "from check4updates import upgrade\nupgrade('"
                                 + self.package_name
                                 + "')"
                             )
-                            check_and_prompt.printyellow(
+                            check_and_prompt.printred(
                                 "Then run the script and ",
                                 self.package_name,
                                 " will be upgraded to the most recent version.",
                             )
-                            check_and_prompt.printyellow(line, "\n", bold=True)
+                            check_and_prompt.printred(line, "\n", bold=True)
                             check_and_prompt.write_file(self, "remind")
                         elif prompt_choice == "2":
-                            check_and_prompt.printyellow(
+                            check_and_prompt.printred(
                                 "\nYou will be reminded again tomorrow or the next time you use ",
                                 self.package_name,
                             )
-                            check_and_prompt.printyellow(
+                            check_and_prompt.printred(
                                 "To upgrade to version ",
                                 self.pypi_version,
                                 " manually, please use:",
@@ -193,22 +196,22 @@ class check_and_prompt:
                                 " pip install --upgrade ",
                                 self.package_name,
                             )
-                            check_and_prompt.printyellow(line, "\n", bold=True)
+                            check_and_prompt.printred(line, "\n", bold=True)
                             check_and_prompt.write_file(self, "remind")
                         elif prompt_choice == "3":
-                            check_and_prompt.printyellow(
+                            check_and_prompt.printred(
                                 "\nVersion ",
                                 self.pypi_version,
                                 " of ",
                                 self.package_name,
                                 " will be skipped",
                             )
-                            check_and_prompt.printyellow(
+                            check_and_prompt.printred(
                                 "You will be prompted again when the next version of ",
                                 self.package_name,
                                 " is released",
                             )
-                            check_and_prompt.printyellow(
+                            check_and_prompt.printred(
                                 "To upgrade to version ",
                                 self.pypi_version,
                                 " manually, please use:",
@@ -216,7 +219,7 @@ class check_and_prompt:
                                 " pip install --upgrade ",
                                 self.package_name,
                             )
-                            check_and_prompt.printyellow(line, "\n", bold=True)
+                            check_and_prompt.printred(line, "\n", bold=True)
                             check_and_prompt.write_file(self, "skip")
             else:
                 # make a note in the txt file if there has been another failure to connect.
@@ -301,9 +304,9 @@ class check_and_prompt:
         self.installed_version = installed_version
 
     @staticmethod
-    def printyellow(*args, bold=False, underline=False):
+    def printred(*args, bold=False, underline=False):
         """
-        Prints in yellow
+        Prints in red
 
         :param args: accepts as many string args as required and DOES NOT separate them by a space
         :param bold: Option to bold the text. Default is False
@@ -320,5 +323,18 @@ class check_and_prompt:
             UNDERLINE = "\033[4m"
         else:
             UNDERLINE = "\033[24m"
+        red = "\033[91m"
         endtext = "\033[0m"
-        print(BOLD + UNDERLINE + "\033[93m" + string + endtext)
+        print(BOLD + UNDERLINE + red + string + endtext)
+
+    @staticmethod
+    def pad_zeros(list_of_strings, padding=5):
+        """
+        adds preceeding zeros to strings so the length of the total string is equal to the arg padding
+        Does this for each item in the list then joins the items are returns the joined item
+        eg. ['1234','12','1'] becomes '012340001200001'
+        """
+        out = ""
+        for string in list_of_strings:
+            out += "0" * (padding - len(string)) + string
+        return out
