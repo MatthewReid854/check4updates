@@ -80,13 +80,11 @@ class check_and_prompt:
                 # pad the versions such that if one version is 1.2.3 and the other is 1.2 the shorter one will be padded to 1.2.0
                 # further pad each part of the version to 5 digits so 2.51.3 and 5.1.1 aren't just 2513 vs 511 as 5.1.1 should be larger.
                 # Instead they are padded to 5 digits anc concatenated so 5.1.1 becomes 000050000100001 which allows for easy numerical comparison (hence the need for padding)
-                pypi_version_split = pypi_version.split(".")
+                pypi_version_split = self.pypi_version.split(".")
                 pypi_version_length = len(pypi_version_split)
-                installed_version_split = installed_version.split(".")
+                installed_version_split = self.installed_version.split(".")
                 installed_version_length = len(installed_version_split)
-                pypi_version_split = pypi_version.split(".")
-                pypi_version_length = len(pypi_version_split)
-                decision_version_split = version.split(
+                decision_version_split = self.version.split(
                     "."
                 )  # the decision version is the latest pypi version at the time of the last decision. Only used for 'skip'
                 decision_version_length = len(decision_version_split)
@@ -100,15 +98,17 @@ class check_and_prompt:
                 installed_version_split.extend(
                     ["0"] * (max_version_length - installed_version_length)
                 )
-                installed_version_numeric = int(pad_zeros(installed_version_split))
+                installed_version_numeric = int(check_and_prompt.pad_zeros(installed_version_split))
+
                 pypi_version_split.extend(
                     ["0"] * (max_version_length - pypi_version_length)
                 )
-                pypi_version_numeric = int(pad_zeros(pypi_version_split))
+                pypi_version_numeric = int(check_and_prompt.pad_zeros(pypi_version_split))
+
                 decision_version_split.extend(
                     ["0"] * (max_version_length - decision_version_length)
                 )
-                decision_version_numeric = int(pad_zeros(decision_version_split))
+                decision_version_numeric = int(check_and_prompt.pad_zeros(decision_version_split))
 
                 # check if installed version has been superseded
                 if installed_version_numeric == pypi_version_numeric:
@@ -220,7 +220,7 @@ class check_and_prompt:
                             check_and_prompt.printred(line, "\n", bold=True)
                             check_and_prompt.write_file(self, "skip")
                         elif prompt_choice == "4":
-                            check_and_prompt.printred("You will never again be prompted to upgrade ",self.package_name, ", even if you upgrade manually.")
+                            check_and_prompt.printred("\nYou will never again be prompted to upgrade ",self.package_name, ", even if you upgrade manually.")
                             check_and_prompt.printred(
                                 "To upgrade to version ",
                                 self.pypi_version,
