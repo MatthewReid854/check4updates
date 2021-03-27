@@ -17,13 +17,12 @@ When *check4updates* does check online, it searches PyPI for the most recent rel
 Detailed documentation and examples are available at [readthedocs](https://check4updates.readthedocs.io/en/latest/).
 
 ## Design principles
--periodically check for updates without user action and without slowing down the parent script
--only prompt the user when necessary
--give the user the option to update now, be reminded later, or skip this version
--handle all errors silently to prevent the parent script from being impacted
+- periodically check for updates without user action and without slowing down the parent script
+- only prompt the user when necessary
+- give the user the option to update now, be reminded later, or skip this version
+- handle all errors silently to prevent the parent script from being impacted
 
 ## Usage
-
 To use *check4updates*, place the following lines in your package's ``__init__.py`` file:
 
 .. code:: python
@@ -34,6 +33,6 @@ To use *check4updates*, place the following lines in your package's ``__init__.p
 It is as simple as that and *check4updates* will do the rest!
 
 ## Contact
-If you find any errors, have any suggestions, or would like to request that something be added, please email alpha.reliability@gmail.com.
+If you find any errors, have any suggestions, or would like to request that something be added, please email [alpha.reliability@gmail.com](mailto:alpha.reliability@gmail.com).
 
 If you would like to receive an email notification when a new release of *check4updates* is uploaded to PyPI, [NewReleases.io](https://newreleases.io/) provides this service for free.
