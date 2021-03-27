@@ -36,6 +36,7 @@ Each time your users import something from your package, the ``check_and_prompt`
         1. I want to upgrade
         2. Remind me tomorrow
         3. Skip this version
+        4. Never ask me again
         Your choice: 
 
 The user's choices will trigger the following:
@@ -43,6 +44,7 @@ The user's choices will trigger the following:
 - Update now :math:`\Rightarrow` Instructions will be printed to the console on how to update. See below for text outputs.
 - Remind me later :math:`\Rightarrow` *check4updates* will store the current timestamp and the action to "remind" in the "check4updates.txt" file and place this in the package folder. This is the file that is checked in step (1).
 - Skip this version :math:`\Rightarrow` *check4updates* will store the current time and the action to "skip" in the "check4updates.txt" file and place this in the package folder. This is the file that is checked in step (1). END
+- Never ask me again :math:`\Rightarrow` *check4updates* will store "neveragain" in the "check4updates.txt" file. This will be remembered even if the user updates the package manually. END
 
 5. If no update is available, *check4updates* will store the current time and the action "checked" in the "check4updates.txt" file and place this in the package folder. This ensures that the time of the last check is recorded and will be found in step (1) on the next execution. END
 
@@ -51,11 +53,12 @@ The user's choices will trigger the following:
 - checked - determine how much time has passed between the timestamp of the last check and now. If sufficient time has passed (as determined by the "online_check_interval" argument) then another check will be performed. Go to (3) else END.
 - remind - determine how much time has passed between the timestamp of the last prompt and now. If sufficient time has passed (as determined by the "remind_delay" argument) then another check will be performed (in case a new version was released since the last prompt). Go to (3) else END.
 - skip - determine how much time has passed between the timestamp of the last check and now. If sufficient time has passed (as determined by the "online_check_interval" argument) then another check will be performed. This ensures that check4updates continues to periodically check PyPI for a new version when the user has selected to skip the current version. *check4updates* will use the requests library to search PyPI for the latest version and check whether the latest version from PyPI exceeds the PyPI_version stored in "check4updates.txt". If there is an error in getting the PyPI version go to (8) else if a new version (beyond the skipped version) is available then go to (4) else go to (7).
-- ConnectionError - This means *check4updates* has previously tried to seach online in step (3) and has encountered a problem with the connection (likely due to not being connected to the internet). In this case the action was recorded as ConnectionError. Another check will be performed if sufficient time has passed (as determined by the "check_interval" argument). Note that the count is used to increase the value of the "online_check_interval" argument if there have been repeated failed connection attempts. This is intended to reduce the number of attempts to check PyPI when failure seems likely. END
+- neveragain - No further action will be taken as the user has previously decided never to be asked again. END
+- connectionerror - This means *check4updates* has previously tried to seach online in step (3) and has encountered a problem with the connection (likely due to not being connected to the internet). In this case the action was recorded as connectionerror. Another check will be performed if sufficient time has passed (as determined by the "check_interval" argument). Note that the count is used to increase the value of the "online_check_interval" argument if there have been repeated failed connection attempts. This is intended to reduce the number of attempts to check PyPI when failure seems likely. END
 
 7. As the user has selected to skip the current PyPI version, update the timestamp so that the next time (6) is run it will only check online if sufficient time has passed. END
 
-8. If there is an error in getting the PyPI version then "check4updates.txt" will have ConnectionError recorded in the action, the current timestamp, 0.0.0 as the PyPI version, and 1 added to the current count. END
+8. If there is an error in getting the PyPI version then "check4updates.txt" will have connectionerror recorded in the action, the current timestamp, 0.0.0 as the PyPI version, and 1 added to the current count. END
 
 The flowchart below shows the above description in an abbreviated form.
 
@@ -109,9 +112,10 @@ When the user is prompted for their choice, they receive the following text:
     1. I want to upgrade
     2. Remind me tomorrow
     3. Skip this version
+    4. Never ask me again
     Your choice: 
 
-The following text outputs will be printed to the console when the user selects 1, 2, or 3 from the prompt:
+The following text outputs will be printed to the console when the user selects 1, 2, 3, or 4 from the prompt:
 
 - 1.
 
@@ -138,4 +142,11 @@ The following text outputs will be printed to the console when the user selects 
     
         Version 0.2.1 of example_package will be skipped
         You will be prompted again when the next version of example_package is released
+        To upgrade to version 0.2.1 manually, please use: pip install --upgrade example_package
+
+- 4.
+    
+    .. code-block:: console
+    
+        You will never again be prompted to upgrade example_package, even if you upgrade manually.
         To upgrade to version 0.2.1 manually, please use: pip install --upgrade example_package

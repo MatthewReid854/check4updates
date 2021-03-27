@@ -51,17 +51,14 @@ class check_and_prompt:
         delta_time = time.time() - float(self.timestamp)
 
         # Increase online check interval every 10 successive connection failures
-        if self.action == "connection_failed" and self.count > 10:
+        if self.action == "connectionerror" and self.count > 10:
             multiplier = 0.1 * self.count
         else:
             multiplier = 1
 
         if self.action is None:
             check_online_version = True
-        elif (
-            self.action in ["checked", "connection_failed"]
-            and delta_time > online_check_interval * multiplier
-        ):
+        elif (self.action in ["checked", "connectionerror"] and delta_time > online_check_interval * multiplier):
             check_online_version = True
         elif self.action == "remind" and delta_time > remind_delay:
             check_online_version = True  # get the pypi version again in case it has been updated since the last reminder
@@ -77,7 +74,7 @@ class check_and_prompt:
             check_and_prompt.get_pypi_version(self)
             check_and_prompt.get_installed_version(self)
 
-            if self.pypi_version != "ConnectionError":
+            if self.pypi_version != "connectionerror":
                 # we can only proceed if obtaining the pypi version was successful
 
                 # pad the versions such that if one version is 1.2.3 and the other is 1.2 the shorter one will be padded to 1.2.0
@@ -145,13 +142,14 @@ class check_and_prompt:
                         )
                         prompt_choice = 0
                         time_before_prompt = time.time()
-                        while prompt_choice not in ["1", "2", "3"]:
+                        while prompt_choice not in ["1", "2", "3", "4"]:
                             check_and_prompt.printred("Please choose an option:")
                             check_and_prompt.printred("1. I want to upgrade")
                             check_and_prompt.printred("2. Remind me tomorrow")
                             check_and_prompt.printred("3. Skip this version")
+                            check_and_prompt.printred("4. Never ask me again")
                             prompt_choice = input("\033[91mYour choice: \033[0m")
-                            if prompt_choice not in ["1", "2", "3"]:
+                            if prompt_choice not in ["1", "2", "3", "4"]:
                                 check_and_prompt.printred("Invalid choice.")
                         prompt_delay = time.time() - time_before_prompt
 
@@ -221,11 +219,26 @@ class check_and_prompt:
                             )
                             check_and_prompt.printred(line, "\n", bold=True)
                             check_and_prompt.write_file(self, "skip")
+                        elif prompt_choice == "4":
+                            check_and_prompt.printred("You will never again be prompted to upgrade ",self.package_name, ", even if you upgrade manually.")
+                            check_and_prompt.printred(
+                                "To upgrade to version ",
+                                self.pypi_version,
+                                " manually, please use:",
+                                italics,
+                                " pip install --upgrade ",
+                                self.package_name,
+                            )
+                            check_and_prompt.printred(line, "\n", bold=True)
+                            check_and_prompt.write_file(self, "neveragain")
+                            # If users select this option, "neveragain" is written to check4updates.txt in the package's directory.
+                            # If they update manually the check4updates.txt file is not deleted so their choice to never be prompted again will remain.
+                            # The only way to overwrite this is for the user to manually delete the check4updates.txt file.
             else:
                 # make a note in the txt file if there has been another failure to connect.
                 # this will be used to increase the online check interval
                 check_and_prompt.write_file(
-                    self, string="connection_failed", count=self.count + 1
+                    self, string="connectionerror", count=self.count + 1
                 )
 
         self.script_duaration = (time.time() - prompt_delay) - start_time
@@ -244,7 +257,7 @@ class check_and_prompt:
                 + str(count)
                 + "\n"
             )
-        )  # this will write "remind/skip/checked/connection_failed timestamp_of_decision pypi_version_of_decision count"
+        )  # this will write "remind/skip/checked/connectionerror/neveragain timestamp_of_decision pypi_version_of_decision count"
         f.close()
 
     def read_file(self):
@@ -292,7 +305,7 @@ class check_and_prompt:
                 pattern=pattern2, string=tar_version, flags=re.I
             )[0][0]
         except ConnectionError:
-            self.pypi_version = "ConnectionError"
+            self.pypi_version = "connectionerror"
 
     def get_installed_version(self):
         """
@@ -313,7 +326,7 @@ class check_and_prompt:
         :param underline: Option to underline the text. Default is False
         """
         arglist = list(args)
-        string = "".join(arglist)
+        string = "".join(arglist) # unlike print() there is no space added between args
 
         if bold is True:
             BOLD = "\033[1m"
@@ -323,16 +336,16 @@ class check_and_prompt:
             UNDERLINE = "\033[4m"
         else:
             UNDERLINE = "\033[24m"
-        red = "\033[91m"
-        endtext = "\033[0m"
-        print(BOLD + UNDERLINE + red + string + endtext)
+        RED = "\033[91m"
+        ENDTEXT = "\033[0m"
+        print(BOLD + UNDERLINE + RED + string + ENDTEXT)
 
     @staticmethod
     def pad_zeros(list_of_strings, padding=5):
         """
         adds preceeding zeros to strings so the length of the total string is equal to the arg padding
         Does this for each item in the list then joins the items are returns the joined item
-        eg. ['1234','12','1'] becomes '012340001200001'
+        eg. ['1234','12','1'] with padding=5 becomes '012340001200001'
         """
         out = ""
         for string in list_of_strings:

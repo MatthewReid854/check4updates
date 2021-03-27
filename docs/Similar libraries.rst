@@ -22,5 +22,5 @@ None of these similar libraries overlap with the function and design principles 
 
 - periodically check for updates without user action and without slowing down the parent script
 - only prompt the user when necessary
-- give the user the option to update now, be reminded later, or skip this version
+- give the user the option to update now, be reminded later, skip this version, or never be asked again
 - handle all errors silently to prevent the parent script from being impacted

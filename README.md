@@ -11,7 +11,7 @@
 
 It is recommended that *check4updates* be placed in your package’s ``__init__.py`` file so that it is called every time the package is used. To minimise runtime, *check4updates* only checks online if certain conditions are met, such as sufficient time since the last check. This ensures that incorporating *check4updates* into your Python package will have a negligible (<0.01sec) effect on the time it takes users to import something from your package (which is when ``__init__.py`` is called) and no impact on any of the functions within your package.
 
-When *check4updates* does check online, it searches PyPI for the most recent release (based on version number) and compares that value with the version installed on the user’s system. If certain conditions are met, the user is then prompted to install the updated version which must be done by the user in a separate command so as not to interrupt the currently executing script. Users can choose to upgrade now, skip this version, or be reminded later and *check4updates* will remember this choice and act accordingly.
+When *check4updates* does check online, it searches PyPI for the most recent release (based on version number) and compares that value with the version installed on the user’s system. If certain conditions are met, the user is then prompted to install the updated version which must be done by the user in a separate command so as not to interrupt the currently executing script. Users can choose to upgrade now, skip this version, be reminded later, or never be asked again and *check4updates* will remember this choice and act accordingly.
 
 ## Documentation
 Detailed documentation and examples are available at [readthedocs](https://check4updates.readthedocs.io/en/latest/).
@@ -19,7 +19,7 @@ Detailed documentation and examples are available at [readthedocs](https://check
 ## Design principles
 - periodically check for updates without user action and without slowing down the parent script
 - only prompt the user when necessary
-- give the user the option to update now, be reminded later, or skip this version
+- give the user the option to update now, be reminded later, skip this version, or never be asked again
 - handle all errors silently to prevent the parent script from being impacted
 
 ## Usage
