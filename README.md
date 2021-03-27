@@ -27,6 +27,7 @@ To use *check4updates*, place the following lines in your package's `__init__.py
 ```python
 from check4updates import check_and_prompt
 check_and_prompt("your_package")
+```
 
 It is as simple as that and *check4updates* will do the rest!
 
