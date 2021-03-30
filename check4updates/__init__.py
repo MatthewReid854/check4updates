@@ -27,7 +27,7 @@ class upgrade:
         subprocess.check_call(
             [sys.executable, "-m", "pip", "install", "--upgrade", self.package_name]
         )
-        self.success = True # for test purposes to confirm this code ran correctly
+        self.success = True  # for test purposes to confirm this code ran correctly
 
 
 class check_and_prompt:
@@ -53,7 +53,7 @@ class check_and_prompt:
         # here we need to read the check4updates.txt file and determine whether we need to check online
         # only look online if it has been enough time since the last check because checking takes time so we don't want to do it too often
         cwd = os.getcwd()  # get the current directory so we can reset it later
-        package_directory = os.path.join(get_python_lib(),self.package_name)
+        package_directory = os.path.join(get_python_lib(), self.package_name)
         os.chdir(path=package_directory)
         check_and_prompt.read_file(self)
         delta_time = time.time() - float(self.timestamp)
@@ -168,12 +168,12 @@ class check_and_prompt:
                             check_and_prompt.printred("4. Never ask me again")
                             if mock_user_input is None:
                                 red, endred = "\033[91m", "\033[0m"
-                                prompt_choice = input(str(red+"Your choice: "+endred))
-                            elif mock_user_input in ["1", "2", "3", "4"]:
+                                prompt_choice = input(
+                                    str(red + "Your choice: " + endred)
+                                )
+                            else:
                                 # accept the mocked user input
                                 prompt_choice = mock_user_input
-                            else:
-                                raise ValueError
 
                             if prompt_choice not in ["1", "2", "3", "4"]:
                                 check_and_prompt.printred("Invalid choice.")
@@ -357,13 +357,12 @@ class check_and_prompt:
         self.installed_version = installed_version
 
     @staticmethod
-    def printred(*args, bold=False, underline=False):
+    def printred(*args, bold=False):
         """
         Prints in red
 
         :param args: accepts as many string args as required and DOES NOT separate them by a space
         :param bold: Option to bold the text. Default is False
-        :param underline: Option to underline the text. Default is False
         """
         arglist = list(args)
         string = "".join(arglist)  # unlike print() there is no space added between args
@@ -372,13 +371,9 @@ class check_and_prompt:
             BOLD = "\033[1m"
         else:
             BOLD = "\033[21m"
-        if underline is True:
-            UNDERLINE = "\033[4m"
-        else:
-            UNDERLINE = "\033[24m"
         RED = "\033[91m"
         ENDTEXT = "\033[0m"
-        print(BOLD + UNDERLINE + RED + string + ENDTEXT)
+        print(BOLD + RED + string + ENDTEXT)
 
     @staticmethod
     def pad_zeros(list_of_strings, padding=5):

@@ -32,6 +32,13 @@ def test_choice_skip():
     assert result.action == 'skip'
     cleanup(package_name)
 
+def test_choice_neveragain():
+    package_name = 'numpy'
+    check_and_prompt(package_name, mock_user_input='4') # writes the new file
+    result = check_and_prompt(package_name, mock_user_input='4') # reads the file
+    assert result.action == 'neveragain'
+    cleanup(package_name)
+
 def test_upgrade():
     package_name = 'seaborn' # this is used as a test case on GitHub actions which does not have seaborn installed when the VM starts
     out = upgrade(package_name)

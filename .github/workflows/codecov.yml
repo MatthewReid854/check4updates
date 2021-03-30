@@ -24,8 +24,11 @@ jobs:
         pip install pytest-cov
     - name: Generate coverage report
       run: pytest --cov=./ --cov-report=xml
+      ignore:
+      - "**/setup.py"
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
         fail_ci_if_error: true
         verbose: true
+        
