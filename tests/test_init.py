@@ -1,6 +1,8 @@
-from check4updates import check_and_prompt
+from check4updates import check_and_prompt, upgrade
 from distutils.sysconfig import get_python_lib
 import os
+import re
+import requests
 
 def cleanup(package_name):
     cwd = os.getcwd()
@@ -29,5 +31,10 @@ def test_choice_skip():
     result = check_and_prompt(package_name, mock_user_input='3') # reads the file
     assert result.action == 'skip'
     cleanup(package_name)
+
+def test_upgrade():
+    package_name = 'seaborn' # this is used as a test case on GitHub actions which does not have seaborn installed when the VM starts
+    out = upgrade(package_name)
+    assert out.success == True
 
 
