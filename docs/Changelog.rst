@@ -8,7 +8,7 @@ Changelog
 **Version: 0.0.2 -- currently unreleased**
 ''''''''''''''''''
 
-- Testing using GitHub Actions to ensure compatability vith different Python versions and different operating systems
+- Testing using GitHub Actions to ensure compatability with different Python versions and different operating systems
 - Added a mock_user_input argument to enable easy testing without the need to prompt the user
 - All printing is in red
 - Improved regex to deal with detection of certain version patterns
