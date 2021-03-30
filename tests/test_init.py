@@ -4,7 +4,7 @@ import os
 
 def cleanup(package_name):
     cwd = os.getcwd()
-    package_directory = str(get_python_lib() + "\\" + package_name)
+    package_directory = os.path.join(get_python_lib(), package_name)
     os.chdir(path=package_directory)
     os.remove("check4updates.txt")
     os.chdir(path=cwd)  # reset the current working directory

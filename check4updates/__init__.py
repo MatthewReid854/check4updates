@@ -52,7 +52,7 @@ class check_and_prompt:
         # here we need to read the check4updates.txt file and determine whether we need to check online
         # only look online if it has been enough time since the last check because checking takes time so we don't want to do it too often
         cwd = os.getcwd()  # get the current directory so we can reset it later
-        package_directory = str(get_python_lib() + "\\" + self.package_name)
+        package_directory = os.path.join(get_python_lib(),self.package_name)
         os.chdir(path=package_directory)
         check_and_prompt.read_file(self)
         delta_time = time.time() - float(self.timestamp)
