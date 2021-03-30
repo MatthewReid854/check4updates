@@ -7,18 +7,23 @@ with open("README.md", "r") as file:
 
 setuptools.setup(
     name="check4updates",
-    version="0.0.1",
-    description="Check if an updated package is available and prompt your users to upgrade",
+    version="0.0.2",
+    description="A library for Python developers that prompts your users to upgrade when a new version of your package is released",
     author="Matthew Reid",
     author_email="alpha.reliability@gmail.com",
     license="MIT",
-    url="https://github.com/MatthewReid854/check4updates",
+    url="https://check4updates.readthedocs.io/en/latest/",
+    project_urls={
+        'Documentation': 'https://check4updates.readthedocs.io/en/latest/',
+        'Source Code': 'https://github.com/MatthewReid854/check4updates',
+    },
     keywords=[
         "check",
         "auto",
         "automatic",
         "upgrade",
         "update",
+        "updates",
         "updater",
         "upgrader",
         "package",

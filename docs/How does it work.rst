@@ -41,8 +41,8 @@ Each time your users import something from your package, the ``check_and_prompt`
 
 The user's choices will trigger the following:
 
-- Update now :math:`\Rightarrow` Instructions will be printed to the console on how to update. See below for text outputs.
-- Remind me later :math:`\Rightarrow` *check4updates* will store the current timestamp and the action to "remind" in the "check4updates.txt" file and place this in the package folder. This is the file that is checked in step (1).
+- Update now :math:`\Rightarrow` Instructions will be printed to the console on how to update. See below for text outputs. END
+- Remind me later :math:`\Rightarrow` *check4updates* will store the current timestamp and the action to "remind" in the "check4updates.txt" file and place this in the package folder. This is the file that is checked in step (1). END
 - Skip this version :math:`\Rightarrow` *check4updates* will store the current time and the action to "skip" in the "check4updates.txt" file and place this in the package folder. This is the file that is checked in step (1). END
 - Never ask me again :math:`\Rightarrow` *check4updates* will store "neveragain" in the "check4updates.txt" file. This will be remembered even if the user updates the package manually. END
 
@@ -62,7 +62,7 @@ The user's choices will trigger the following:
 
 The flowchart below shows the above description in an abbreviated form.
 
-.. image:: images/flowchart_not_ready_yet.png
+.. image:: images/flowchart.png
 
 check4updates.upgrade()
 '''''''''''''''''''''''

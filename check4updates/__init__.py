@@ -2,7 +2,7 @@
 # pylint: skip-file
 
 __title__ = "check4updates"
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __description__ = "Check if an updated package is available and prompt users to upgrade"
 __url__ = "https://github.com/MatthewReid854/check4updates"
 __author__ = "Matthew Reid"
@@ -34,9 +34,16 @@ class check_and_prompt:
     :param package_name: string - the package name. e.g. 'matplotlib'
     :param remind_delay: int - number of seconds until next reminder - default is 86400 (1 day)
     :param online_check_interval: int - number of seconds until we look online again to check the current PyPI version - default is 6048000 (7 days)
+    :param mock_user_input: string. Used to mock the user input when running automated tests. Must be None or '1','2','3','4'
     """
 
-    def __init__(self, package_name, remind_delay=86400, online_check_interval=6048000):
+    def __init__(
+        self,
+        package_name,
+        remind_delay=86400,
+        online_check_interval=6048000,
+        mock_user_input=None,
+    ):
         self.package_name = package_name
 
         start_time = time.time()  # used for timing the execution of this script
@@ -45,7 +52,7 @@ class check_and_prompt:
         # here we need to read the check4updates.txt file and determine whether we need to check online
         # only look online if it has been enough time since the last check because checking takes time so we don't want to do it too often
         cwd = os.getcwd()  # get the current directory so we can reset it later
-        package_directory = str(get_python_lib() + "\\" + package_name)
+        package_directory = str(get_python_lib() + "\\" + self.package_name)
         os.chdir(path=package_directory)
         check_and_prompt.read_file(self)
         delta_time = time.time() - float(self.timestamp)
@@ -58,7 +65,10 @@ class check_and_prompt:
 
         if self.action is None:
             check_online_version = True
-        elif (self.action in ["checked", "connectionerror"] and delta_time > online_check_interval * multiplier):
+        elif (
+            self.action in ["checked", "connectionerror"]
+            and delta_time > online_check_interval * multiplier
+        ):
             check_online_version = True
         elif self.action == "remind" and delta_time > remind_delay:
             check_online_version = True  # get the pypi version again in case it has been updated since the last reminder
@@ -98,17 +108,23 @@ class check_and_prompt:
                 installed_version_split.extend(
                     ["0"] * (max_version_length - installed_version_length)
                 )
-                installed_version_numeric = int(check_and_prompt.pad_zeros(installed_version_split))
+                installed_version_numeric = int(
+                    check_and_prompt.pad_zeros(installed_version_split)
+                )
 
                 pypi_version_split.extend(
                     ["0"] * (max_version_length - pypi_version_length)
                 )
-                pypi_version_numeric = int(check_and_prompt.pad_zeros(pypi_version_split))
+                pypi_version_numeric = int(
+                    check_and_prompt.pad_zeros(pypi_version_split)
+                )
 
                 decision_version_split.extend(
                     ["0"] * (max_version_length - decision_version_length)
                 )
-                decision_version_numeric = int(check_and_prompt.pad_zeros(decision_version_split))
+                decision_version_numeric = int(
+                    check_and_prompt.pad_zeros(decision_version_split)
+                )
 
                 # check if installed version has been superseded
                 if installed_version_numeric == pypi_version_numeric:
@@ -123,113 +139,127 @@ class check_and_prompt:
                             self, "skip"
                         )  # update the timestamp so we don't check for another week
                     else:
-                        # prompt the user to update
-                        line = "----------------------------------------------------------------------------------"
-                        check_and_prompt.printred(line, bold=True)
-                        check_and_prompt.printred(
-                            "Version ",
-                            self.pypi_version,
-                            " of ",
-                            self.package_name,
-                            " is available on PyPI",
-                        )
-                        check_and_prompt.printred(
-                            "You currently have version ",
-                            self.installed_version,
-                            " of ",
-                            self.package_name,
-                            " installed",
-                        )
-                        prompt_choice = 0
-                        time_before_prompt = time.time()
-                        while prompt_choice not in ["1", "2", "3", "4"]:
-                            check_and_prompt.printred("Please choose an option:")
-                            check_and_prompt.printred("1. I want to upgrade")
-                            check_and_prompt.printred("2. Remind me tomorrow")
-                            check_and_prompt.printred("3. Skip this version")
-                            check_and_prompt.printred("4. Never ask me again")
-                            prompt_choice = input("\033[91mYour choice: \033[0m")
-                            if prompt_choice not in ["1", "2", "3", "4"]:
-                                check_and_prompt.printred("Invalid choice.")
-                        prompt_delay = time.time() - time_before_prompt
-
-                        italics = "\033[3m"
-                        if prompt_choice == "1":
+                        if mock_user_input is None:
+                            # prompt the user to update
+                            line = "----------------------------------------------------------------------------------"
+                            check_and_prompt.printred(line, bold=True)
                             check_and_prompt.printred(
-                                "\nTo upgrade ",
-                                self.package_name,
-                                " you can do one of the following:",
-                            )
-                            check_and_prompt.printred(
-                                "Open your command prompt / terminal and type:",
-                                italics,
-                                " pip install --upgrade ",
-                                self.package_name,
-                            )
-                            check_and_prompt.printred("or")
-                            check_and_prompt.printred(
-                                "From within your Python IDE in a new Python script type:\n"
-                                + italics
-                                + "from check4updates import upgrade\nupgrade('"
-                                + self.package_name
-                                + "')"
-                            )
-                            check_and_prompt.printred(
-                                "Then run the script and ",
-                                self.package_name,
-                                " will be upgraded to the most recent version.",
-                            )
-                            check_and_prompt.printred(line, "\n", bold=True)
-                            check_and_prompt.write_file(self, "remind")
-                        elif prompt_choice == "2":
-                            check_and_prompt.printred(
-                                "\nYou will be reminded again tomorrow or the next time you use ",
-                                self.package_name,
-                            )
-                            check_and_prompt.printred(
-                                "To upgrade to version ",
-                                self.pypi_version,
-                                " manually, please use:",
-                                italics,
-                                " pip install --upgrade ",
-                                self.package_name,
-                            )
-                            check_and_prompt.printred(line, "\n", bold=True)
-                            check_and_prompt.write_file(self, "remind")
-                        elif prompt_choice == "3":
-                            check_and_prompt.printred(
-                                "\nVersion ",
+                                "Version ",
                                 self.pypi_version,
                                 " of ",
                                 self.package_name,
-                                " will be skipped",
+                                " is available on PyPI",
                             )
                             check_and_prompt.printred(
-                                "You will be prompted again when the next version of ",
+                                "You currently have version ",
+                                self.installed_version,
+                                " of ",
                                 self.package_name,
-                                " is released",
+                                " installed",
                             )
-                            check_and_prompt.printred(
-                                "To upgrade to version ",
-                                self.pypi_version,
-                                " manually, please use:",
-                                italics,
-                                " pip install --upgrade ",
-                                self.package_name,
-                            )
-                            check_and_prompt.printred(line, "\n", bold=True)
+                            prompt_choice = 0
+                            time_before_prompt = time.time()
+                            while prompt_choice not in ["1", "2", "3", "4"]:
+                                check_and_prompt.printred("Please choose an option:")
+                                check_and_prompt.printred("1. I want to upgrade")
+                                check_and_prompt.printred("2. Remind me tomorrow")
+                                check_and_prompt.printred("3. Skip this version")
+                                check_and_prompt.printred("4. Never ask me again")
+                                prompt_choice = input("\033[91mYour choice: \033[0m")
+                                if prompt_choice not in ["1", "2", "3", "4"]:
+                                    check_and_prompt.printred("Invalid choice.")
+                            prompt_delay = time.time() - time_before_prompt
+                        else:
+                            if mock_user_input not in ["1", "2", "3", "4"]:
+                                # accept the mocked user input
+                                raise ValueError
+                            prompt_choice = mock_user_input
+
+                        italics = "\033[3m"
+                        if prompt_choice == "1":
+                            if mock_user_input is None:
+                                check_and_prompt.printred(
+                                    "\nTo upgrade ",
+                                    self.package_name,
+                                    " you can do one of the following:",
+                                )
+                                check_and_prompt.printred(
+                                    "Open your command prompt / terminal and type:",
+                                    italics,
+                                    " pip install --upgrade ",
+                                    self.package_name,
+                                )
+                                check_and_prompt.printred("or")
+                                check_and_prompt.printred(
+                                    "From within your Python IDE in a new Python script type:\n"
+                                    + italics
+                                    + "from check4updates import upgrade\nupgrade('"
+                                    + self.package_name
+                                    + "')"
+                                )
+                                check_and_prompt.printred(
+                                    "Then run the script and ",
+                                    self.package_name,
+                                    " will be upgraded to the most recent version.",
+                                )
+                                check_and_prompt.printred(line, "\n", bold=True)
+                            check_and_prompt.write_file(self, "remind")
+                        elif prompt_choice == "2":
+                            if mock_user_input is None:
+                                check_and_prompt.printred(
+                                    "\nYou will be reminded again tomorrow or the next time you use ",
+                                    self.package_name,
+                                )
+                                check_and_prompt.printred(
+                                    "To upgrade to version ",
+                                    self.pypi_version,
+                                    " manually, please use:",
+                                    italics,
+                                    " pip install --upgrade ",
+                                    self.package_name,
+                                )
+                                check_and_prompt.printred(line, "\n", bold=True)
+                            check_and_prompt.write_file(self, "remind")
+                        elif prompt_choice == "3":
+                            if mock_user_input is None:
+                                check_and_prompt.printred(
+                                    "\nVersion ",
+                                    self.pypi_version,
+                                    " of ",
+                                    self.package_name,
+                                    " will be skipped",
+                                )
+                                check_and_prompt.printred(
+                                    "You will be prompted again when the next version of ",
+                                    self.package_name,
+                                    " is released",
+                                )
+                                check_and_prompt.printred(
+                                    "To upgrade to version ",
+                                    self.pypi_version,
+                                    " manually, please use:",
+                                    italics,
+                                    " pip install --upgrade ",
+                                    self.package_name,
+                                )
+                                check_and_prompt.printred(line, "\n", bold=True)
                             check_and_prompt.write_file(self, "skip")
                         elif prompt_choice == "4":
-                            check_and_prompt.printred("\nYou will never again be prompted to upgrade ",self.package_name, ", even if you upgrade manually.")
-                            check_and_prompt.printred(
-                                "To upgrade to version ",
-                                self.pypi_version,
-                                " manually, please use:",
-                                italics,
-                                " pip install --upgrade ",
-                                self.package_name,
-                            )
-                            check_and_prompt.printred(line, "\n", bold=True)
+                            if mock_user_input is None:
+                                check_and_prompt.printred(
+                                    "\nYou will never again be prompted to upgrade ",
+                                    self.package_name,
+                                    ", even if you upgrade manually.",
+                                )
+                                check_and_prompt.printred(
+                                    "To upgrade to version ",
+                                    self.pypi_version,
+                                    " manually, please use:",
+                                    italics,
+                                    " pip install --upgrade ",
+                                    self.package_name,
+                                )
+                                check_and_prompt.printred(line, "\n", bold=True)
                             check_and_prompt.write_file(self, "neveragain")
                             # If users select this option, "neveragain" is written to check4updates.txt in the package's directory.
                             # If they update manually the check4updates.txt file is not deleted so their choice to never be prompted again will remain.
@@ -245,6 +275,11 @@ class check_and_prompt:
         os.chdir(path=cwd)  # reset the current working directory
 
     def write_file(self, string, count=1):
+        """
+        write the check4updates.txt file in the format
+        action time version count
+        the string arg provided is the action which will be either checked, remind, skip, connectionerror, neveragain
+        """
         f = open("check4updates.txt", "w")
         f.write(
             str(
@@ -261,6 +296,10 @@ class check_and_prompt:
         f.close()
 
     def read_file(self):
+        """
+        read the check4updates.txt file to obtain the values action, time, version, count
+        The version here is the pypi version when the file was written
+        """
         try:
             f = open("check4updates.txt", "r")
             line = f.readline().strip(r"\n")
@@ -300,7 +339,7 @@ class check_and_prompt:
             page = requests.get(url).text
             pattern = r">{}-(.+?)<".format(self.package_name)
             tar_version = re.findall(pattern=pattern, string=page, flags=re.I)[-1]
-            pattern2 = "([0-9]+(\.[0-9]+)+)"
+            pattern2 = r"([0-9]+(\.[0-9]+)+)"
             self.pypi_version = re.findall(
                 pattern=pattern2, string=tar_version, flags=re.I
             )[0][0]
@@ -326,7 +365,7 @@ class check_and_prompt:
         :param underline: Option to underline the text. Default is False
         """
         arglist = list(args)
-        string = "".join(arglist) # unlike print() there is no space added between args
+        string = "".join(arglist)  # unlike print() there is no space added between args
 
         if bold is True:
             BOLD = "\033[1m"
