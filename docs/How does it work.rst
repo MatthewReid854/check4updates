@@ -117,7 +117,7 @@ When the user is prompted for their choice, they receive the following text:
 
 The following text outputs will be printed to the console when the user selects 1, 2, 3, or 4 from the prompt:
 
-- 1.
+- choice = 1
 
     .. code-block:: console
     
@@ -129,14 +129,14 @@ The following text outputs will be printed to the console when the user selects 
         upgrade('example_package')
         Then run the script and example_package will be upgraded to the most recent version.
 
-- 2.
+- choice = 2
     
     .. code-block:: console
     
         You will be reminded again tomorrow or the next time you use example_package
         To upgrade to version 0.2.1 manually, please use: pip install --upgrade example_package
 
-- 3.
+- choice = 3
     
     .. code-block:: console
     
@@ -144,7 +144,7 @@ The following text outputs will be printed to the console when the user selects 
         You will be prompted again when the next version of example_package is released
         To upgrade to version 0.2.1 manually, please use: pip install --upgrade example_package
 
-- 4.
+- choice = 4
     
     .. code-block:: console
     
