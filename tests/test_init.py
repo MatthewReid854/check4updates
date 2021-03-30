@@ -10,21 +10,21 @@ def cleanup(package_name):
     os.chdir(path=cwd)  # reset the current working directory
 
 def test_choice_upgrade():
-    package_name = 'requests'
+    package_name = 'numpy'
     check_and_prompt(package_name, mock_user_input='1') # writes the new file
     result = check_and_prompt(package_name, mock_user_input='1') # reads the file
     assert result.action == 'remind'
     cleanup(package_name)
 
 def test_choice_remind():
-    package_name = 'requests'
+    package_name = 'numpy'
     check_and_prompt(package_name, mock_user_input='2') # writes the new file
     result = check_and_prompt(package_name, mock_user_input='2') # reads the file
     assert result.action == 'remind'
     cleanup(package_name)
 
 def test_choice_skip():
-    package_name = 'requests'
+    package_name = 'numpy'
     check_and_prompt(package_name, mock_user_input='3') # writes the new file
     result = check_and_prompt(package_name, mock_user_input='3') # reads the file
     assert result.action == 'skip'
