@@ -8,11 +8,15 @@ def cleanup(package_name):
     cwd = os.getcwd()
     package_directory = os.path.join(get_python_lib(), package_name)
     os.chdir(path=package_directory)
-    os.remove("check4updates.txt")
+    try:
+        os.remove("check4updates.txt")
+    except FileNotFoundError:
+        pass
     os.chdir(path=cwd)  # reset the current working directory
 
 def test_choice_upgrade():
     package_name = 'numpy'
+    cleanup(package_name)
     check_and_prompt(package_name, mock_user_input='1') # writes the new file
     result = check_and_prompt(package_name, mock_user_input='1') # reads the file
     assert result.action == 'remind'
@@ -20,6 +24,7 @@ def test_choice_upgrade():
 
 def test_choice_remind():
     package_name = 'numpy'
+    cleanup(package_name)
     check_and_prompt(package_name, mock_user_input='2') # writes the new file
     result = check_and_prompt(package_name, mock_user_input='2') # reads the file
     assert result.action == 'remind'
@@ -27,6 +32,7 @@ def test_choice_remind():
 
 def test_choice_skip():
     package_name = 'numpy'
+    cleanup(package_name)
     check_and_prompt(package_name, mock_user_input='3') # writes the new file
     result = check_and_prompt(package_name, mock_user_input='3') # reads the file
     assert result.action == 'skip'
@@ -34,6 +40,7 @@ def test_choice_skip():
 
 def test_choice_neveragain():
     package_name = 'numpy'
+    cleanup(package_name)
     check_and_prompt(package_name, mock_user_input='4') # writes the new file
     result = check_and_prompt(package_name, mock_user_input='4') # reads the file
     assert result.action == 'neveragain'

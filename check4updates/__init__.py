@@ -303,7 +303,7 @@ class check_and_prompt:
         """
         try:
             f = open("check4updates.txt", "r")
-            line = f.readline().strip(r"\n")
+            line = f.readline().strip("\n")
             f.close()
             read_line = line.rsplit(" ")
             read_action, read_time, read_version, read_count = (
