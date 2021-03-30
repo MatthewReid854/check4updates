@@ -2,6 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/check4updates?color=brightgreen&logo=Python&logoColor=white&label=PyPI%20package)](https://pypi.org/project/check4updates/)
 [![Documentation Status](https://img.shields.io/readthedocs/check4updates/latest.svg?logo=read%20the%20docs&logoColor=white&label=Docs&version=latest)](http://check4updates.readthedocs.io/?badge=latest)
+[![Actions Status](https://github.com/MatthewReid854/check4updates/workflows/Build%20and%20Test/badge.svg)](https://github.com/MatthewReid854/check4updates/actions)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/MatthewReid854/check4updates.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MatthewReid854/check4updates/context:python)
 [![Downloads](https://static.pepy.tech/personalized-badge/check4updates?period=month&units=international_system&left_color=grey&right_color=brightgreen&left_text=PyPI%20downloads/month)](https://pepy.tech/project/check4updates)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg?logo=GNU&logoColor=white)](https://mit-license.org/)
