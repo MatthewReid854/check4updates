@@ -142,7 +142,7 @@ class check_and_prompt:
                     else:
                         line = "----------------------------------------------------------------------------------"
                         # prompt the user to update
-                        check_and_prompt.printred(line, bold=True)
+                        check_and_prompt.printred(line)
                         check_and_prompt.printred(
                             "Version ",
                             self.pypi_version,
@@ -206,7 +206,7 @@ class check_and_prompt:
                                 self.package_name,
                                 " will be upgraded to the most recent version.",
                             )
-                            check_and_prompt.printred(line, "\n", bold=True)
+                            check_and_prompt.printred(line, "\n")
                             check_and_prompt.write_file(self, "remind")
                         elif prompt_choice == "2":
                             check_and_prompt.printred(
@@ -221,7 +221,7 @@ class check_and_prompt:
                                 " pip install --upgrade ",
                                 self.package_name,
                             )
-                            check_and_prompt.printred(line, "\n", bold=True)
+                            check_and_prompt.printred(line, "\n")
                             check_and_prompt.write_file(self, "remind")
                         elif prompt_choice == "3":
                             check_and_prompt.printred(
@@ -244,7 +244,7 @@ class check_and_prompt:
                                 " pip install --upgrade ",
                                 self.package_name,
                             )
-                            check_and_prompt.printred(line, "\n", bold=True)
+                            check_and_prompt.printred(line, "\n")
                             check_and_prompt.write_file(self, "skip")
                         elif prompt_choice == "4":
                             check_and_prompt.printred(
@@ -260,7 +260,7 @@ class check_and_prompt:
                                 " pip install --upgrade ",
                                 self.package_name,
                             )
-                            check_and_prompt.printred(line, "\n", bold=True)
+                            check_and_prompt.printred(line, "\n")
                             check_and_prompt.write_file(self, "neveragain")
                             # If users select this option, "neveragain" is written to check4updates.txt in the package's directory.
                             # If they update manually the check4updates.txt file is not deleted so their choice to never be prompted again will remain.
@@ -357,23 +357,15 @@ class check_and_prompt:
         self.installed_version = installed_version
 
     @staticmethod
-    def printred(*args, bold=False):
+    def printred(*args):
         """
         Prints in red
 
         :param args: accepts as many string args as required and DOES NOT separate them by a space
-        :param bold: Option to bold the text. Default is False
         """
         arglist = list(args)
         string = "".join(arglist)  # unlike print() there is no space added between args
-
-        if bold is True:
-            BOLD = "\033[1m"
-        else:
-            BOLD = "\033[21m"
-        RED = "\033[91m"
-        ENDTEXT = "\033[0m"
-        print(BOLD + RED + string + ENDTEXT)
+        print("\033[91m" + string + "\033[0m")
 
     @staticmethod
     def pad_zeros(list_of_strings, padding=5):
