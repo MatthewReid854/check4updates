@@ -3,7 +3,7 @@
 
 __title__ = "check4updates"
 __version__ = "0.0.2"
-__description__ = "Check if an updated package is available and prompt users to upgrade"
+__description__ = "A library for Python developers that prompts your users to upgrade when a new version of your package is released"
 __url__ = "https://github.com/MatthewReid854/check4updates"
 __author__ = "Matthew Reid"
 __author_email__ = "alpha.reliability@gmail.com"
