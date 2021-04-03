@@ -1,0 +1,21 @@
+codecov:
+  max_report_age: off
+  require_ci_to_pass: no
+
+comment: false
+
+coverage:
+  precision: 2
+  round: down
+  status:
+    project:
+      default:
+        threshold: 0.2
+        if_not_found: success
+    patch: off
+    changes: off
+
+ignore:
+  - "**/tests"
+  - "setup.py"
+  
