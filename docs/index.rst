@@ -26,7 +26,7 @@ Contents:
   Pull requests and suggested enhancements
   Contributing
   
-  .. |pypi| image:: https://img.shields.io/pypi/v/check4updates?color=brightgreen&logo=Python&logoColor=white&label=PyPI%20package
+.. |pypi| image:: https://img.shields.io/pypi/v/check4updates?color=brightgreen&logo=Python&logoColor=white&label=PyPI%20package
     :alt: PyPI package
     :scale: 100%
     :target: https://pypi.org/project/check4updates/
