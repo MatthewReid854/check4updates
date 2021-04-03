@@ -16,6 +16,4 @@ coverage:
     changes: off
 
 ignore:
-  - "**/tests"
   - "setup.py"
-  
