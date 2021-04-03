@@ -3,6 +3,7 @@ from distutils.sysconfig import get_python_lib
 import os
 import re
 import requests
+import pytest
 
 def cleanup(package_name):
     cwd = os.getcwd()
@@ -13,6 +14,10 @@ def cleanup(package_name):
     except FileNotFoundError:
         pass
     os.chdir(path=cwd)  # reset the current working directory
+
+def test_packagename_not_str():
+    with pytest.raises(ValueError):
+        check_and_prompt(package_name=True)
 
 def test_choice_upgrade():
     package_name = 'numpy'

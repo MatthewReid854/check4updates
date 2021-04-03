@@ -45,6 +45,8 @@ class check_and_prompt:
         online_check_interval=6048000,
         mock_user_input=None,
     ):
+        if type(package_name) is not str:
+            raise ValueError("package_name must be a string")
         self.package_name = package_name
 
         start_time = time.time()  # used for timing the execution of this script
