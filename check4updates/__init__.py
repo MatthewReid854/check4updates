@@ -169,10 +169,9 @@ class check_and_prompt:
                             check_and_prompt.printred("3. Skip this version")
                             check_and_prompt.printred("4. Never ask me again")
                             if mock_user_input is None:
-                                red, endred = "\033[91m", "\033[0m"
                                 prompt_choice = input(
-                                    str(red + "Your choice: " + endred)
-                                )
+                                    str("\033[91m" + "Your choice: " + "\033[0m")
+                                )  # the special characters are to make the text red
                             else:
                                 # accept the mocked user input
                                 prompt_choice = mock_user_input
